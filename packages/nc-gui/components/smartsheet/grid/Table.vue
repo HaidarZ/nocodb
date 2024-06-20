@@ -981,6 +981,8 @@ const colPositions = computed(() => {
 
 const scrollWrapper = computed(() => scrollParent.value || gridWrapper.value)
 
+const scrollLeft = ref()
+
 function scrollToCell(row?: number | null, col?: number | null) {
   row = row ?? activeCell.row
   col = col ?? activeCell.col
@@ -1367,7 +1369,8 @@ async function reloadViewDataHandler(params: void | { shouldShowLoading?: boolea
 
 let frame: number | null = null
 
-useEventListener(scrollWrapper, 'scroll', () => {
+useEventListener(scrollWrapper, 'scroll', (e) => {
+  scrollLeft.value = e.target.scrollLeft
   if (frame) {
     cancelAnimationFrame(frame)
   }
@@ -2322,7 +2325,7 @@ onKeyStroke('ArrowDown', onDown)
     </div>
 
     <LazySmartsheetPagination
-      v-if="headerOnly !== true && paginationDataRef"
+      v-if="headerOnly !== true && paginationDataRef && isGroupBy"
       :key="`nc-pagination-${isMobileMode}`"
       v-model:pagination-data="paginationDataRef"
       :show-api-timing="!isGroupBy"
@@ -2417,6 +2420,8 @@ onKeyStroke('ArrowDown', onDown)
         </div>
       </template>
     </LazySmartsheetPagination>
+
+    <LazySmartsheetGridPaginationV2 v-else :scroll-left="scrollLeft" />
   </div>
 </template>
 
