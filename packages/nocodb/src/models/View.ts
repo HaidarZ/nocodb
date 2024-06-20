@@ -1838,7 +1838,7 @@ export default class View implements ViewType {
 
         let show = 'show' in column ? column.show : true;
 
-        if (view.type === ViewTypes.GALLERY) {
+        if (view.type === ViewTypes.GALLERY && !copyFromView) {
           const galleryView = await GalleryView.get(context, view.id, ncMeta);
           if (
             (column.id === galleryView.fk_cover_image_col_id && column.pv) ||
